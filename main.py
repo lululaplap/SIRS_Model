@@ -55,10 +55,12 @@ class SIRS(object):
         return self.lattice
 
     def simulate(self,n):
-        Icount = np.zeros(n)
+        Icount = np.zeros(int(np.ceil(n/10)))
         for i in range(0,n):
             self.update()
-            Icount[i] = self.countInfected()
+            if i%10==0:
+
+                Icount[i/10] = self.countInfected()
         return Icount
 
     def animate(self,i):
@@ -69,11 +71,14 @@ class SIRS(object):
     def countInfected(self):
         return np.sum((self.lattice ==1).astype(int))
 
+    def phase(self):
+        pass
+
 def main():
-    S = SIRS(50,[0.5,0.0333,0.5] )
-    #I = S.simulate(1000)
-    #plt.plot(I/50**2)
-    ani = animation.FuncAnimation(fig, S.animate)
+    S = SIRS(50,[0.8, 0.4, 0.025] )
+    I = S.simulate(1000)
+    plt.plot(I/50**2)
+    # ani = animation.FuncAnimation(fig, S.animate)
     plt.show()
 
 main()
