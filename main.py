@@ -59,8 +59,8 @@ class SIRS(object):
         for i in range(0,n):
             self.update()
             if i%10==0:
-
-                Icount[i/10] = self.countInfected()
+                j = int(i/10)
+                Icount[j] = self.countInfected()
         return Icount
 
     def animate(self,i):
@@ -71,14 +71,32 @@ class SIRS(object):
     def countInfected(self):
         return np.sum((self.lattice ==1).astype(int))
 
-    def phase(self):
-        pass
+    @classmethod
+    def phaseSim(cls,n=8,N=50):
+        x = np.linspace(0.1,1,n)
+        y = np.linspace(0.1,1,n)
+        print(x)
+        print(y)
+        avgs = np.zeros((n,n))
+        for i in range(0,n):
+            for j in range(0,n):
+                print([i,j])
+                print(x[i])
+                print(y[j])
+                p=[0.5,x[i],y[j]]
+                S = cls(N,p)
+                S.simulate(100)
+                avgs[i,j] = np.mean(S.simulate(100))
+        return avgs
+
 
 def main():
-    S = SIRS(50,[0.8, 0.4, 0.025] )
-    I = S.simulate(1000)
-    plt.plot(I/50**2)
-    # ani = animation.FuncAnimation(fig, S.animate)
+    S = SIRS(50,[0.8, 0.1, 0.012] )
+    #I = S.simulate(1000)
+    #plt.plot(I/50**2)
+    #ani = animation.FuncAnimation(fig, S.animate)
+    SIRS.phaseSim()
+    plt.imshow(avgs)
     plt.show()
 
 main()
