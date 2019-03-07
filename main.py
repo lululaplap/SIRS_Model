@@ -72,22 +72,24 @@ class SIRS(object):
         return np.sum((self.lattice ==1).astype(int))
 
     @classmethod
-    def phaseSim(cls,n=8,N=50):
+    def phaseSim(cls,n=20,N=50):
         x = np.linspace(0.1,1,n)
         y = np.linspace(0.1,1,n)
         print(x)
         print(y)
         avgs = np.zeros((n,n))
+        var = np.zeros((n,n))
         for i in range(0,n):
             for j in range(0,n):
                 print([i,j])
-                print(x[i])
-                print(y[j])
                 p=[0.5,x[i],y[j]]
                 S = cls(N,p)
                 S.simulate(100)
-                avgs[i,j] = np.mean(S.simulate(100))
-        return avgs
+                data = S.simulate(100)
+                avgs[i,j] = np.mean(data)
+                var[i,j] = np.var(data)
+
+        return [avgs, var]
 
 
 def main():
@@ -95,8 +97,10 @@ def main():
     #I = S.simulate(1000)
     #plt.plot(I/50**2)
     #ani = animation.FuncAnimation(fig, S.animate)
-    SIRS.phaseSim()
+    avgs,var = SIRS.phaseSim(20,50)
     plt.imshow(avgs)
+    plt.show()
+    plt.imshow(var)
     plt.show()
 
 main()
