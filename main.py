@@ -7,14 +7,14 @@ Created on Tue Mar  5 15:12:43 2019
 
 
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from periodic_lattice import Periodic_Lattice
-import matplotlib.animation as animation
+# import matplotlib.animation as animation
 
-fig = plt.figure()
-ax1 = fig.add_subplot(1,1,1)
+# fig = plt.figure()
+# ax1 = fig.add_subplot(1,1,1)
 
-class SIRS(object):
+class SIR(object):
     def __init__(self,N,p):
         """
         0: susceptible
@@ -91,16 +91,35 @@ class SIRS(object):
 
         return [avgs, var]
 
+class SIRS(SIR):
+    def __init__(self,N,p,immune):
+        SIR.__init__(self,N,p)
+        p1 = (1-immune)/3
+        initArray = np.random.choice(a=[0,1,2,3], size=(self.N, self.N),p=[p1,p1,p1,immune])
+        self.lattice = Periodic_Lattice(initArray)
 
+    @classmethod
+    def immuneSim(cls,d,p,n=10,N=1000):
+        ps = np.linspace(0,1,n)
+        avgs = np.zeros(n)
+        vars = np.zeros(n)
+        for i in range(n):
+            S = cls(d,p,ps[i])
+            S.simulate(100)#equilibrate
+            count = S.simulate(1000)
+            avgs[i] = np.mean(count)
+            vars[i] = np.var(count)
+        return [avgs,vars]
 def main():
-    S = SIRS(50,[0.8, 0.1, 0.012] )
+    S = SIR(50,[0.8, 0.1, 0.012] )
     #I = S.simulate(1000)
     #plt.plot(I/50**2)
-    #ani = animation.FuncAnimation(fig, S.animate)
-    avgs,var = SIRS.phaseSim(20,50)
-    plt.imshow(avgs)
-    plt.show()
-    plt.imshow(var)
-    plt.show()
+    ani = animation.FuncAnimation(fig, S.animate)
+    #avgs,var = SIR.phaseSim(20,50)
+    # plt.imshow(avgs)
+    # plt.show()
+    # plt.imshow(var)
+    # plt.show()
 
-main()
+
+    plt.show()
