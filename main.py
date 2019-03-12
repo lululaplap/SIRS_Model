@@ -82,7 +82,7 @@ class SIR(object):
         for i in range(0,n):
             for j in range(0,n):
                 print([i,j])
-                p=[0.5,x[i],y[j]]
+                p=[x[i],0.5,y[j]]
                 S = cls(N,p)
                 S.simulate(100)
                 data = S.simulate(100)
@@ -106,7 +106,8 @@ class SIRS(SIR):
         for i in range(n):
             S = cls(d,p,ps[i])
             S.simulate(100)#equilibrate
-            count = S.simulate(1000)
+            count = S.simulate(N)
+            print(i)
             avgs[i] = np.mean(count)
             vars[i] = np.var(count)
         return [avgs,vars]
