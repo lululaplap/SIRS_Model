@@ -13,5 +13,9 @@ else:
     print("N:lattice size (int), n:Number of data points(int)")
 
 avgs, vars = SIR.phaseCut(n=n,N=N)
-plt.plot(avgs)
+plt.plot(avgs/(N*N))
 plt.show()
+plt.plot(vars/(N*N))
+plt.show()
+np.savetxt("CutAverage.csv",avgs)
+np.savetxt("CutVar",vars)
