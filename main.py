@@ -7,12 +7,12 @@ Created on Tue Mar  5 15:12:43 2019
 
 
 import numpy as np
-# import matplotlib.pyplot as plt
 from periodic_lattice import Periodic_Lattice
-# import matplotlib.animation as animation
-
-# fig = plt.figure()
-# ax1 = fig.add_subplot(1,1,1)
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import sys
+fig = plt.figure()
+ax1 = fig.add_subplot(1,1,1)
 
 class SIR(object):
     def __init__(self,N,p):
@@ -73,8 +73,8 @@ class SIR(object):
 
     @classmethod
     def phaseSim(cls,n=20,N=50):
-        x = np.linspace(0.1,1,n)
-        y = np.linspace(0.1,1,n)
+        x = np.linspace(0,1,n)
+        y = np.linspace(0,1,n)
         print(x)
         print(y)
         avgs = np.zeros((n,n))
@@ -85,11 +85,35 @@ class SIR(object):
                 p=[x[i],0.5,y[j]]
                 S = cls(N,p)
                 S.simulate(100)
-                data = S.simulate(100)
+                data = S.simulate(1000)
                 avgs[i,j] = np.mean(data)
                 var[i,j] = np.var(data)
 
-        return [avgs, var]
+        return [avgs, var/N**2]
+
+    @classmethod
+    def phaseCut(cls,n=20,N=50):
+        x = np.linspace(0.2,0.5,n)
+        avgs = np.zeros(n)
+        var = np.zeros(n)
+        for i in range(0,n):
+            print(i)
+            p=[x[i],0.5,0.5]
+            S = cls(N,p)
+            S.simulate(100)
+            data = S.simulate(10000)
+            avgs[i] = np.mean(data)
+            var[i] = np.var(data)
+        return [avgs, var/N**2]
+    @staticmethod
+    def animations(args):
+        N = int(args[1])
+        p1 = float(args[2])
+        p2 = float(args[3])
+        p3 = float(args[4])
+        S = SIR(N,[p1,p1,p3] )
+        ani = animation.FuncAnimation(fig, S.animate)
+        plt.show()
 
 class SIRS(SIR):
     def __init__(self,N,p,immune):
@@ -111,16 +135,3 @@ class SIRS(SIR):
             avgs[i] = np.mean(count)
             vars[i] = np.var(count)
         return [avgs,vars]
-def main():
-    S = SIR(50,[0.8, 0.1, 0.012] )
-    #I = S.simulate(1000)
-    #plt.plot(I/50**2)
-    ani = animation.FuncAnimation(fig, S.animate)
-    #avgs,var = SIR.phaseSim(20,50)
-    # plt.imshow(avgs)
-    # plt.show()
-    # plt.imshow(var)
-    # plt.show()
-
-
-    plt.show()

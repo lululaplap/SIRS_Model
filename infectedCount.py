@@ -3,7 +3,20 @@ from main import SIRS
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 
-S = SIR(50,[0.8, 0.1, 0.012] )
+import sys
+args = sys.argv
+if len(args)==5:
+    N=int(args[1])
+    p1=float(args[2])
+    p2=float(args[3])
+    p3=float(args[4])
+else:
+    print("N:lattice size (int), p1:p2:p2 probabilities 1, 2 and 3 (int)")
+    print(len(args))
+
+
+
+S = SIR(N,[p1,p2,p3] )
 I = S.simulate(1000)
 plt.plot(I/50**2)
 plt.show()
